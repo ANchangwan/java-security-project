@@ -1,0 +1,55 @@
+server:
+  port: 9000
+
+
+spring:
+  application:
+    name: post-project
+  # profiless:
+  #   active: prod  # 개발 환경 설정 (dev, prod)
+
+  # DB 연결 정보
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_board?serverTimezone=Asia/Seoul&characterEncoding=utf8
+    username: react
+    password: Mysql1234!!
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # create / update / validate / none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+
+# 파일 업로드 설정
+servlet:
+  multipart:
+    max-request-size: 30MB  # 클라이언트가 여러 파일을 업로드할때 요청의 총 크기가 30MB 초과 안됨
+    max-file-size: 10MB     # 개벌 업로드 파일의 최대 크기
+    location: /tmp/upload   # 임시 디렉토리
+
+# 업로드된 파일의 저장 경로
+file:
+  upload:
+    path: upload  # ./upload
+    
+# MyBatis 설정 정보
+mybatis:  
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.example.post_project.dto
+
+# Logging
+logging:
+  level:
+    root: INFO
+    '[org.hibernate.SQL]': DEBUG            # SQL문 로그 출력
+    '[org.hibernate.orm.jdbc.bind]': TRACE  # 중요 : 바인딩된 값 출력
+    '[org.springframework.securityapp]': TRACE # security Logging
+
+
+
+
