@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,10 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.example.security_project.security.filter.JWTCheckFilter;
 import com.example.security_project.security.handler.ApiAuthenticationFailureHandler;
 import com.example.security_project.security.handler.ApiAuthenticationSuccessHandler;
 
@@ -25,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableWebSecurity // Security를 활성화 하는 annotation
+@EnableMethodSecurity
 public class CustomSecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
@@ -59,6 +63,14 @@ public class CustomSecurityConfig {
                 config.failureHandler(new ApiAuthenticationFailureHandler());
             }
         );
+
+        http.addFilterBefore(new JWTCheckFilter(),UsernamePasswordAuthenticationFilter.class);
+        // 인가
+       http.exceptionHandling(config ->{
+         config.accessDeniedHandler(null);
+       });
+
+
         return http.build();
     }
 

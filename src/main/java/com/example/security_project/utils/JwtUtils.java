@@ -6,7 +6,13 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import com.example.security_project.exception.CustomJWTException;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.InvalidClaimException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
 
 /*
@@ -28,14 +34,42 @@ public class JwtUtils {
             throw new RuntimeException(e.getMessage());
         }
 
-        Jwts.builder()
+        return Jwts.builder()
             .setHeader(Map.of("typ", "JWT"))
             .setClaims(claims)
-            .setIssuedAt(Date.from(ZonedDateTime.now().toString()));
+            .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
             .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(min).toInstant()))
             .compact();
+    }
 
-        return null;
+    //JWT 토큰 검증
+    public static Map<String, Object> validateToken(String token){
+
+        Map<String, Object> claims = null;
+        try{
+            //Secretkey
+            SecretKey secretKey = Keys.hmacShaKeyFor(JwtUtils.key.getBytes("utf-8"));
+
+            claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        } catch(MalformedJwtException malformedJwtException){
+            throw new CustomJWTException("Malformed");
+        } catch(ExpiredJwtException expiredJwtException){
+            throw new CustomJWTException("expired");
+        } catch(InvalidClaimException invalidClaimException){
+            throw new CustomJWTException("invaild");
+        } catch (JwtException jwtException){
+            throw new CustomJWTException("JWTError");
+        } catch(Exception e){
+            throw new CustomJWTException("JWTError");
+        }
+
+        return claims;
+
     }
     
 }
