@@ -30,7 +30,6 @@ public class ApiAuthenticationSuccessHandler implements AuthenticationSuccessHan
             PrintWriter pw = response.getWriter();
             pw.println("<h1>" + email + " 로그인에 성공했습니다.");
             pw.close();
-
     }
     
 }

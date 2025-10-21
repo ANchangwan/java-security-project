@@ -43,7 +43,6 @@ public class CustomSecurityConfig {
         http.cors(httpSecurityCorsConfigurer -> {
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()); // DI
         });
-
         // 2. 세션 비활성화
         http.sessionManagement(sessionConfig -> 
             sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -53,16 +52,13 @@ public class CustomSecurityConfig {
         
         // 폼 기반 로그인 요청 처리
         http.formLogin(config -> {
-            
-            config.loginProcessingUrl("/api/v1/member/login"); // POST
-            config.usernameParameter("email");
-            // config.passwordParameter("password");
-            config.successHandler(new ApiAuthenticationSuccessHandler());
-            config.failureHandler(new ApiAuthenticationFailureHandler());
+                config.loginProcessingUrl("/api/v1/members/login"); // POST
+                config.usernameParameter("email");
+                // config.passwordParameter("password");
+                config.successHandler(new ApiAuthenticationSuccessHandler());
+                config.failureHandler(new ApiAuthenticationFailureHandler());
             }
-            
         );
-
         return http.build();
     }
 
