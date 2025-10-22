@@ -18,14 +18,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class ItemController {
-
+    // DI
     private final ItemService itemService;
 
+    // 상품 목록 조회
     @GetMapping("/items")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
-    public ResponseEntity<List<ItemDto>> getItems(){
-        List<ItemDto> items = itemService.receiveItems();
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<ItemDto>> getItems() {
+        List<ItemDto> items = itemService.retrieveItems();
+
         return ResponseEntity.status(HttpStatus.OK).body(items);
     }
-    
+
 }

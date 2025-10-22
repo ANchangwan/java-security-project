@@ -4,9 +4,7 @@ server:
 
 spring:
   application:
-    name: post-project
-  # profiless:
-  #   active: prod  # 개발 환경 설정 (dev, prod)
+    name: security-project
 
   # DB 연결 정보
   datasource:

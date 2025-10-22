@@ -14,22 +14,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 @ToString
-@Getter @Setter
-public class MemberDto extends User{
-    
+@Getter
+@Setter
+public class MemberDto extends User {
+
     private String email;
-
     private String password;
-
     private String nickName;
-
     private List<String> roleNames = new ArrayList<>();
 
     // constructor method
     public MemberDto(String email, String password, String nickName, List<String> roleNames) {
-        super(email, password, roleNames.stream()
-            .map(roleName -> new SimpleGrantedAuthority("ROLE_"+roleName))
-            .collect(Collectors.toList()));
+        super(email, password,
+                roleNames.stream().map(roleName -> new SimpleGrantedAuthority("ROLE_" + roleName))
+                        .collect(Collectors.toList()));
 
         this.email = email;
         this.password = password;
@@ -37,16 +35,13 @@ public class MemberDto extends User{
         this.roleNames = roleNames;
     }
 
-    // 클레임
-    public Map<String, Object> getClaims(){
-        
-        Map<String, Object> map = new HashMap();
-
+    public Map<String, Object> getClaims() {
+        Map<String, Object> map = new HashMap<>();
         map.put("email", email);
-        map.put("password",password);
+        map.put("password", password);
         map.put("nickName", nickName);
         map.put("roleNames", roleNames);
-
         return map;
     }
+
 }

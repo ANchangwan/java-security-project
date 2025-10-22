@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import com.example.security_project.domain.Member;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, String>{
+public interface MemberRepository extends JpaRepository<Member, String> {
 
-    @Query("SELECT a FROM Member AS a JOIN FETCH a.roles WHERE a.email = :email")
+    @Query("SELECT m FROM Member AS m JOIN FETCH m.roles WHERE m.email = :email")
     Member getWithRoles(@Param("email") String email);
-    
+
 }

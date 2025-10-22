@@ -15,20 +15,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-    private final ItemRepository itemRepository;
 
-    public List<ItemDto> receiveItems(){
-        return itemRepository
-        .findAll()
-        .stream()
-        .map(this::entityToDto)
-        .collect(Collectors.toList());
+    private final ItemRepository itemRepository; // DI
+
+    public List<ItemDto> retrieveItems() {
+        return itemRepository.findAll().stream().map(this::entityToDto).collect(Collectors.toList());
     }
 
-    public ItemDto entityToDto(Item item){
+    public ItemDto entityToDto(Item item) {
         return ItemDto.builder()
-                        .id(item.getId())
-                        .name(item.getName())
-                        .build();
+                .id(item.getId())
+                .name(item.getName())
+                .build();
     }
+
 }

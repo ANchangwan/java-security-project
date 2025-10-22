@@ -9,12 +9,13 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+import static org.assertj.core.api.Assertions.*;
 
 import com.example.security_project.domain.Item;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ItemRepository {
+public class ItemRepositoryTest {
 
     @Autowired
     private ItemRepository itemRepository;
@@ -23,13 +24,20 @@ public class ItemRepository {
     @Rollback(false)
     void testSave(){
 
-        List<Item> item = new ArrayList<>();
-        item.add(Item.builder().name("냉장고").build());
-        item.add(Item.builder().name("에어컨").build());
-        item.add(Item.builder().name("세탁기").build());
-        item.add(Item.builder().name("공기 청정기").build());
+        List<Item> items = new ArrayList<>();
+
+        items.add(Item.builder().name("냉장고").build());
+        items.add(Item.builder().name("세타기").build());
+        items.add(Item.builder().name("에어컨").build());
+        items.add(Item.builder().name("공기청정기").build());
+        items.add(Item.builder().name("제습기").build());
 
 
+         // when
+        List<Item> saved = itemRepository.saveAll(items);
+
+        // then
+        assertThat(saved).hasSize(5);
 
 
     }

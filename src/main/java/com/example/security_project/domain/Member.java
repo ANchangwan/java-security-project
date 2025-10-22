@@ -28,19 +28,19 @@ public class Member {
     private String email;
 
     private String password;
-    
+
     private String nickName;
 
     @Builder.Default
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "member_role", joinColumns = @JoinColumn(name = "email", referencedColumnName = "email"))
-    @Enumerated(EnumType.STRING) // ADMIN, USER, MANAGER
-    List<MemberRole> roles = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    List<MemberRole> roles = new ArrayList<>(); // ADMIN, USER, MANAGER
 
     // 비즈니스 메소드
-    public void addRole(MemberRole role){
-        if (!roles.contains(role)){
-            roles.add(role); 
+    public void addRole(MemberRole role) {
+        if (!roles.contains(role)) {
+            roles.add(role);
         }
     }
 

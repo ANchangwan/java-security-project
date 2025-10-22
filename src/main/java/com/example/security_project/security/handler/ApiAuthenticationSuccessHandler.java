@@ -5,11 +5,12 @@ import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.example.security_project.dto.MemberDto;
-import com.example.security_project.utils.JwtUtils;
+import com.example.security_project.utils.JwtUtil;
 import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
@@ -25,31 +26,33 @@ public class ApiAuthenticationSuccessHandler implements AuthenticationSuccessHan
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-            
-            log.info("authentication : {}", authentication);
-            
-                // email
-            MemberDto memberDto = (MemberDto)authentication.getPrincipal();
 
-            //claims
-            Map<String, Object> claims = memberDto.getClaims();
+        log.info("authentication : {}", authentication);
 
-            //Access token, Refrech token 생성
-            String accessToken =  JwtUtils.generateToken(claims, 10);
-            String refreshToken = JwtUtils.generateToken(claims, 60 * 24);
+        // email
+        MemberDto memberDto = (MemberDto) authentication.getPrincipal();
 
-            claims.put("accessToken", accessToken);
-            claims.put("refreshToken", refreshToken);
+        // claims
+        Map<String, Object> claims = memberDto.getClaims();
 
-            Gson gson = new Gson();
+        // Access token, Rrefresh token 생성
+        String accessToken = JwtUtil.generateToken(claims, 10); // 10분
 
-            String jsonStr = gson.toJson(claims);
-            
-            response.setContentType("application/json: charset=utf-8");
-            
-            PrintWriter pw = response.getWriter();
-            pw.println(jsonStr);
-            pw.close();
+        String refreshToken = JwtUtil.generateToken(claims, 60 * 24); // 1일
+
+        claims.put("accessToken", accessToken);
+        claims.put("refreshToken", refreshToken);
+
+        Gson gson = new Gson();
+
+        String jsonStr = gson.toJson(claims);
+
+        response.setContentType("application/json: charset=utf-8");
+
+        PrintWriter pw = response.getWriter();
+        pw.println(jsonStr);
+        pw.close();
+
     }
-    
+
 }

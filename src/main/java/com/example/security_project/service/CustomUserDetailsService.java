@@ -17,25 +17,25 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService{
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        
+
         Member member = memberRepository.getWithRoles(email);
 
-        if (member == null){
+        if (member == null) {
             throw new RuntimeException(email + " Not found.");
         }
 
-        MemberDto memberDto = new MemberDto(member.getEmail(), member.getPassword(), member.getNickName(), 
-                                            member.getRoles().stream().map(role -> role.name()).collect(Collectors.toList()));
-                                            
+        MemberDto memberDto = new MemberDto(email, member.getPassword(), member.getNickName(),
+                member.getRoles().stream().map(role -> role.name()).collect(Collectors.toList()));
+
         log.info("memberDto : {}", memberDto.toString());
 
         return memberDto;
     }
-    
+
 }

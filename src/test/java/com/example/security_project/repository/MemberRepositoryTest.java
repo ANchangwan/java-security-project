@@ -8,65 +8,63 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 
 import com.example.security_project.domain.Member;
 import com.example.security_project.domain.MemberRole;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.assertj.core.api.Assertions.*;
 
-@Slf4j 
-@SpringBootTest // CustomSecurityCinfig의 비밀번호 암호화를 사용하기 위해 
+@SpringBootTest
+@Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class MemberRepositoryTest {
-
     @Autowired
     private MemberRepository memberRepository;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test
-    void testSave(){
+    @Rollback(false)
+    void testSave() {
+
         List<Member> members = new ArrayList<>();
 
-        for(int i = 1; i <= 10; i++){
-            Member member =  Member.builder()
-                                .email("user"+i+"@naver.com")
-                                .password(passwordEncoder.encode("1111"))
-                                .nickName("user"+i)
-                                .build();
-            
-            member.addRole(MemberRole.USER); 
-            
-            if(i >= 5){
-                member.addRole(MemberRole.MANAGER); 
-            } 
-            
-            if(i >= 8){ 
-                member.addRole(MemberRole.ADMIN); 
+        for (int i = 1; i <= 10; i++) {
+            Member member = Member.builder()
+                    .email("user" + i + "@gmail.com")
+                    .password(passwordEncoder.encode("1111"))
+                    .nickName("user" + i)
+                    .build();
+
+            member.addRole(MemberRole.USER);
+            if (i >= 5) {
+                member.addRole(MemberRole.MANAGER);
             }
 
+            if (i >= 8) {
+                member.addRole(MemberRole.ADMIN);
+            }
             members.add(member);
         }
 
-        // memberRepository.saveAll((List<Member>) members);
         memberRepository.saveAll(members);
-
     }
 
     @Test
     void testGetWithRoles() {
 
-        // Given
-        String email = "user7@naver.com";
+        // given
+        String email = "user6@gmail.com";
 
-        // When
+        // when
         Member member = memberRepository.getWithRoles(email);
 
-
-        // Then
+        // then
         assertThat(member).isNotNull();
         assertThat(member.getEmail()).isEqualTo(email);
         assertThat(member.getRoles()).hasSize(2);

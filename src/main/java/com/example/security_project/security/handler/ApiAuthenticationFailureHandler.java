@@ -10,17 +10,20 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+
+// 인증에 실패한 경우
 public class ApiAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
-                
-            response.setContentType("text/html; charset=utf-8");
-                
-            PrintWriter pw = response.getWriter();
-            pw.println("<h1>" + " 로그인에 실패했습니다.");
-            pw.close();
+
+        // Content-Type 설정
+        response.setContentType("text/html; charset=utf-8");
+
+        PrintWriter pw = response.getWriter();
+        pw.println("<h1>" + "Error : " + exception.getMessage() + "</h1>");
+        pw.close();
     }
-    
+
 }
